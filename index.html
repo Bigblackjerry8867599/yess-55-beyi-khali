@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UPTOPIA | Community-Driven Experiences</title>
+    <meta name="description" content="UPTOPIA offers curated hospitality experiences that connect passionate hosts with community-minded attendees.">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #3e362e;
+            --dark: #1a1a1a;
+            --light: #000000;
+            --accent: #ffd166;
+            --brand-blue: rgb(3, 3, 94);
+            --card-bg: #1a1a1a;
+            --border: #333;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: #ffffff;
+            background-color: var(--light);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 600;
+            line-height: 1.2;
+        }
+
+        a { color: inherit; }
+        a:focus-visible,
+        button:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 3px;
+            border-radius: 4px;
+        }
+
+        /* ===== NAVBAR ===== */
+        .navbar {
+            background-color: var(--light);
+            box-shadow: var(--light);
+            padding: 15px 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+        
+        .navbar.scrolled {
+            padding: 10px 0;
+            background-color: var(--light);
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        /* NAV STRUCTURE: brand left, links right (desktop), toggle right (mobile) */
+        .nav-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        /* Brand group (extreme left) */
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            flex: 0 0 auto;
+        }
+
+        /* Right group: nav links (desktop) / toggle (mobile) */
+        .nav-right {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            flex: 0 0 auto;
+        }
+
+        /* Logo */
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: #ffffff;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo i {
+            margin-right: 8px;
+            color: #ffffff;
+        }
+
+        /* Menu toggle button */
+        #menu-toggle {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.3);
+            color: #fff;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: background 0.2s, border-color 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+        }
+        #menu-toggle:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: var(--accent);
+        }
+
+        /* Desktop nav links (visible > 900px) */
+        .nav-links {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            gap: 2rem;
+        }
+        
+        .nav-links li {
+            margin: 0;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: #ffffff;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            position: relative;
+            white-space: nowrap;
+        }
+        
+        .nav-links a:hover {
+            color: var(--accent);
+        }
+        
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--accent);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Mobile dropdown menu */
+        @media (max-width: 900px) {
+            .nav-links {
+                display: none; /* hidden by default */
+                position: absolute;
+                top: calc(100% + 10px);
+                right: 0;
+                width: 12.5vw;          /* half of the previous 25vw */
+                min-width: 150px;       /* prevent too tiny on narrow screens */
+                flex-direction: column;
+                background: #000000;    /* black background */
+                border: 1px solid var(--border);
+                border-radius: 12px;
+                padding: 1rem 0.8rem;
+                gap: 0.6rem;
+                box-shadow: 0 12px 30px rgba(0,0,0,0.7);
+                z-index: 999;
+                margin: 0;
+            }
+            .nav-links.open {
+                display: flex;
+            }
+            .nav-links li {
+                width: 100%;
+                margin: 0;
+            }
+            .nav-links a {
+                display: block;
+                padding: 0.6rem 0.8rem;
+                border-radius: 8px;
+                color: #ffffff;        /* white text */
+                font-weight: 500;
+                font-size: 0.9rem;
+                transition: background 0.2s;
+                white-space: normal;
+                text-align: left;
+            }
+            .nav-links a:hover {
+                background: rgba(255,255,255,0.15);
+                color: #ffffff;
+            }
+            .nav-links a::after {
+                display: none;        /* remove underline on mobile */
+            }
+            .nav-links .signup {
+                text-align: center;
+            }
+            .logo {
+                font-size: 24px;
+            }
+        }
+
+        /* On desktop, toggle should be hidden (links visible) */
+        @media (min-width: 901px) {
+            #menu-toggle {
+                display: none;
+            }
+            .nav-links {
+                display: flex !important; /* override any inline styles */
+                position: static;
+                background: transparent;
+                box-shadow: none;
+                border: none;
+                padding: 0;
+                flex-direction: row;
+                width: auto;
+                min-width: 0;
+                margin: 0;
+                gap: 2rem;
+            }
+            .nav-links a {
+                padding: 0;
+                display: inline;
+                border-radius: 0;
+                color: #fff;
+                font-size: 1rem;
+            }
+            .nav-links a:hover {
+                background: transparent;
+                color: var(--accent);
+            }
+        }
+
+        /* ===== HERO ===== */
+        .hero {
+            background: linear-gradient(180deg, var(--brand-blue) 0%, #0a0a2a 100%);
+            padding: 140px 1rem 60px; /* increased top padding for fixed navbar */
+        }
+        .hero-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            min-height: 70vh;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 2rem;
+        }
+        .hero-column {
+            flex: 1 1 480px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: center;
+            position: relative;
+        }
+        .hero-column:nth-child(1) {
+            max-width: 600px;
+        }
+        .hero-tag {
+            color: #fff;
+            background-color: var(--brand-blue);
+            padding: 8px 18px;
+            border-radius: 50px;
+            display: inline-block;
+            font-size: 0.85rem;
+            margin-bottom: 18px;
+            border: 1px solid rgba(255,255,255,0.15);
+        }
+        .hero-title {
+            font-size: clamp(2rem, 5vw, 4rem);
+            line-height: 1.1;
+            margin-bottom: 15px;
+            color: #fff;
+            font-weight: bold;
+        }
+        .hero-paragraph {
+            font-size: 1rem;
+            margin-bottom: 25px;
+            color: rgba(255,255,255,0.85);
+            max-width: 500px;
+        }
+        .order-button {
+            background-color: var(--accent);
+            color: #000;
+            padding: 12px 28px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: transform 0.2s, opacity 0.2s;
+        }
+        .order-button:hover { transform: translateY(-2px); opacity: 0.9; }
+
+        .hero-column:nth-child(2) {
+            align-items: center;
+            justify-content: center;
+            display: flex;
+            position: relative;
+        }
+        .hero-image-wrap {
+            position: relative;
+            display: inline-block;
+        }
+        .hero-column-two-image {
+            width: min(380px, 80vw);
+            height: min(380px, 80vw);
+            border-radius: 50%;
+            z-index: 10;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+            object-fit: cover;
+            display: block;
+        }
+        .img-info {
+            position: absolute;
+            height: 130px;
+            width: 130px;
+            background-color: var(--brand-blue);
+            border-radius: 50%;
+            top: -10px;
+            left: -20px;
+            z-index: 20;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            border: 4px dotted #fff;
+            padding: 10px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.35);
+        }
+        .img-info span {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.05rem;
+            font-weight: 700;
+            line-height: 1.2;
+            color: #fff;
+        }
+        .hero-btns { display: flex; gap: 12px; margin-top: 18px; flex-wrap: wrap; }
+        .btn { border-radius: 30px; padding: 12px 28px; font-weight: 500; }
+
+        /* ===== SHARED SECTIONS ===== */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+        section { padding: 80px 0; }
+        .section-title { text-align: center; margin-bottom: 50px; }
+        .section-title h2 { font-size: clamp(1.8rem, 4vw, 2.5rem); color: var(--accent); }
+
+        /* ===== CLIENTS ===== */
+        .clients { background: var(--light); padding: 60px 0; }
+        .client-logos {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 40px;
+            align-items: center;
+        }
+        .client-logo {
+            height: 50px;
+            opacity: 0.75;
+            filter: grayscale(1) invert(1);
+            transition: opacity 0.3s, filter 0.3s;
+            max-width: 160px;
+            object-fit: contain;
+        }
+        .client-logo:hover { opacity: 1; filter: none; }
+
+        /* ===== WHAT WE DO ===== */
+        .what-we-do { background: var(--dark); }
+        .services {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+        .service-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            transition: transform 0.3s, border-color 0.3s;
+        }
+        .service-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent);
+        }
+        .service-icon {
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: var(--accent);
+            background: rgba(255,209,102,0.08);
+        }
+        .service-content { padding: 30px; }
+        .service-content h3 { color: #fff; margin-bottom: 10px; font-size: 1.35rem; }
+        .service-content p { color: rgba(255,255,255,0.75); font-size: 0.95rem; }
+
+        /* ===== HOW IT WORKS ===== */
+        .how-it-works { background: var(--light); }
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 25px;
+        }
+        .step-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            padding: 30px;
+            position: relative;
+            transition: transform 0.3s, border-color 0.3s;
+        }
+        .step-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent);
+        }
+        .step-number {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: var(--accent);
+            color: #000;
+            font-weight: 700;
+            font-size: 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 18px;
+            font-family: 'Poppins', sans-serif;
+        }
+        .step-card h3 { color: #fff; margin-bottom: 10px; font-size: 1.2rem; }
+        .step-card p { color: rgba(255,255,255,0.75); font-size: 0.95rem; }
+
+        /* ===== WHY US ===== */
+        .why-us { background: var(--dark); }
+        .advantages {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 25px;
+        }
+        .advantage-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            transition: transform 0.3s, border-color 0.3s;
+        }
+        .advantage-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent);
+        }
+        .advantage-icon {
+            font-size: 2.5rem;
+            color: var(--accent);
+            margin-bottom: 15px;
+        }
+        .advantage-card h3 { color: #fff; margin-bottom: 10px; font-size: 1.15rem; }
+        .advantage-card p { color: rgba(255,255,255,0.75); font-size: 0.95rem; }
+
+        /* ===== CTA ===== */
+        .cta {
+            background: linear-gradient(135deg, var(--brand-blue) 0%, #0a0a2a 100%);
+            text-align: center;
+        }
+        .cta h2 {
+            font-size: clamp(1.6rem, 4vw, 2.3rem);
+            color: var(--accent);
+            margin-bottom: 15px;
+        }
+        .cta p {
+            max-width: 640px;
+            margin: 0 auto 30px;
+            color: rgba(255,255,255,0.85);
+        }
+        .cta-btns {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .cta-btns .btn-light {
+            background: var(--accent);
+            color: #000;
+            border: none;
+        }
+        .cta-btns .btn-light:hover { background: #ffdb8a; color: #000; }
+        .cta-btns .btn-outline-light {
+            border: 2px solid #fff;
+            color: #fff;
+        }
+        .cta-btns .btn-outline-light:hover {
+            background: #fff;
+            color: #000;
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            background: #0a0a0a;
+            border-top: 1px solid var(--border);
+            padding: 50px 1rem 30px;
+        }
+        .footer-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+        }
+        .footer-column h3 {
+            color: var(--accent);
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+        .footer-column p,
+        .footer-column li {
+            color: rgba(255,255,255,0.7);
+            font-size: 0.9rem;
+            margin: 8px 0;
+        }
+        .footer-column ul { list-style: none; padding: 0; }
+        .footer-column a {
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .footer-column a:hover { color: var(--accent); }
+        .footer-column i { color: var(--accent); margin-right: 8px; }
+        .copyright {
+            max-width: 1200px;
+            margin: 40px auto 0;
+            padding-top: 25px;
+            border-top: 1px solid var(--border);
+            text-align: center;
+            color: rgba(255,255,255,0.5);
+            font-size: 0.85rem;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 900px) {
+            .hero {
+                padding-top: 120px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            section { padding: 55px 0; }
+            .hero { padding: 100px 1rem 50px; }
+            .hero-container {
+                flex-direction: column-reverse;
+                min-height: auto;
+                gap: 1.5rem;
+            }
+            .hero-column {
+                flex: 1 1 100%;
+                align-items: center;
+                text-align: center;
+                width: 100%;
+            }
+            .hero-paragraph { margin-left: auto; margin-right: auto; }
+            .hero-btns { justify-content: center; }
+            .hero-column-two-image {
+                width: min(280px, 70vw);
+                height: min(280px, 70vw);
+            }
+            .img-info {
+                height: 100px;
+                width: 100px;
+                top: -8px;
+                left: -12px;
+                padding: 6px;
+            }
+            .img-info span { font-size: 0.8rem; }
+            .client-logos { gap: 25px; }
+            .client-logo { height: 40px; }
+            .footer-grid { text-align: center; }
+        }
+
+        @media (max-width: 480px) {
+            .hero-title { font-size: 1.9rem; }
+            .hero-btns { flex-direction: column; width: 100%; }
+            .hero-btns .btn,
+            .order-button { width: 100%; text-align: center; }
+            .cta-btns { flex-direction: column; }
+            .cta-btns .btn { width: 100%; }
+            .nav-links {
+                width: 40vw; /* slightly wider on very small screens for readability */
+                min-width: 140px;
+            }
+        }
+
+        /* Accessibility: reduced motion */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.01ms !important;
+            }
+            html { scroll-behavior: auto; }
+        }
+    </style>
+</head>
+<body>
+    <nav id="navbar" class="navbar">
+        <div class="container nav-container">
+            <!-- EXTREME LEFT: brand/logo -->
+            <div class="nav-brand">
+                <a href="index.html" class="logo" aria-label="UPTOPIA home">
+                    <i class="fas fa-utensils" aria-hidden="true"></i> UPTOPIA
+                </a>
+            </div>
+
+            <!-- EXTREME RIGHT: toggle + nav links -->
+            <div class="nav-right">
+                <button id="menu-toggle"
+                        type="button"
+                        aria-label="Toggle navigation menu"
+                        aria-controls="nav-links"
+                        aria-expanded="false">
+                    <i class="fas fa-bars" aria-hidden="true"></i>
+                </button>
+
+                <ul id="nav-links" class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="solutions.html">Solutions</a></li>
+                    <li><a href="case-studies.html">Case Studies</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="signup.html" class="signup">Sign Up</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-container">
+            <div class="hero-column">
+                <span class="hero-tag">Community-Driven Experiences</span>
+                <h1 class="hero-title">Connect Through Shared Experiences</h1>
+                <p class="hero-paragraph">
+                    Building integrated communities through shared spaces.
+                </p>
+                <a href="case-studies.html" class="order-button">Explore Experiences</a>
+                <div class="hero-btns">
+                    <a href="solutions.html" class="btn btn-outline-light">Become a Host</a>
+                </div>
+            </div>
+            <div class="hero-column">
+                <div class="hero-image-wrap">
+                    <img
+                        src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=800&q=80"
+                        alt="Guests enjoying a community gathering hosted through UPTOPIA"
+                        class="hero-column-two-image"
+                        loading="lazy">
+                    <div class="img-info">
+                        <span>870+<br>Successful<br>Gatherings</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FEATURED IN ===== -->
+    <section class="clients">
+        <div class="container">
+            <div class="section-title"><h2>Feature spaces/ our clients </h2></div>
+            <p style="text-align:center; color:rgba(255,255,255,0.7); max-width:700px; margin:0 auto;">
+                We partner with schools, companies of all sizes as well as individuals who take up the mantle as hosts and benefactors
+                through curated hospitality experiences — from cooking classes to nature hikes and intimate gatherings.
+            </p>
+        </div>
+    </section>
+
+    <!-- ===== WHAT WE OFFER ===== -->
+    <section class="what-we-do">
+        <div class="container">
+            <div class="section-title">
+                <h2>What We Offer</h2>
+            </div>
+            <div class="services">
+                <div class="service-card">
+                    <div class="service-icon"><i class="fas fa-calendar-check" aria-hidden="true"></i></div>
+                    <div class="service-content">
+                        <h3>Curated Experiences</h3>
+                        <p>We carefully select and vet hosts to ensure high-quality, memorable experiences that bring people together in meaningful ways.</p>
+                    </div>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon"><i class="fas fa-users" aria-hidden="true"></i></div>
+                    <div class="service-content">
+                        <h3>Community Building</h3>
+                        <p>Our algorithm connects like-minded individuals to foster genuine relationships and build vibrant local communities.</p>
+                    </div>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon"><i class="fas fa-shield-alt" aria-hidden="true"></i></div>
+                    <div class="service-content">
+                        <h3>Secure Platform</h3>
+                        <p>We provide a safe, reliable platform for hosts and attendees with secure payments and verified profiles.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== HOW IT WORKS ===== -->
+    <section class="how-it-works">
+        <div class="container">
+            <div class="section-title">
+                <h2>How It Works</h2>
+            </div>
+            <div class="steps">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <h3>Discover Experiences</h3>
+                    <p>Browse our curated selection of gatherings in your area — from cooking classes to nature hikes and game nights.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <h3>Book Your Spot</h3>
+                    <p>Reserve your place with our secure booking system. Receive all details and preparation instructions.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <h3>Connect &amp; Enjoy</h3>
+                    <p>Attend the event, meet like-minded people, and create meaningful connections in a welcoming environment.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">4</div>
+                    <h3>Become a Host</h3>
+                    <p>Share your passion! Apply to host your own events and build your community following.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== WHY US ===== -->
+    <section class="why-us">
+        <div class="container">
+            <div class="section-title">
+                <h2>Why Choose UPTOPIA</h2>
+            </div>
+            <div class="advantages">
+                <div class="advantage-card">
+                    <div class="advantage-icon"><i class="fas fa-heart" aria-hidden="true"></i></div>
+                    <h3>Authentic Connections</h3>
+                    <p>Our matching algorithm ensures you meet people who share your interests and values.</p>
+                </div>
+                <div class="advantage-card">
+                    <div class="advantage-icon"><i class="fas fa-star" aria-hidden="true"></i></div>
+                    <h3>Quality Experiences</h3>
+                    <p>Every host is vetted to ensure exceptional, memorable gatherings.</p>
+                </div>
+                <div class="advantage-card">
+                    <div class="advantage-icon"><i class="fas fa-lock" aria-hidden="true"></i></div>
+                    <h3>Safe &amp; Secure</h3>
+                    <p>Verified profiles and secure payments give you peace of mind.</p>
+                </div>
+                <div class="advantage-card">
+                    <div class="advantage-icon"><i class="fas fa-users" aria-hidden="true"></i></div>
+                    <h3>Community Focus</h3>
+                    <p>We're building networks that extend beyond single events.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== CTA ===== -->
+    <section class="cta">
+        <div class="container">
+            <h2>Ready to Join Our Community?</h2>
+            <p>Discover unique experiences in your area or start hosting your own gatherings. Join thousands of community builders on UPTOPIA.</p>
+            <div class="cta-btns">
+                <a href="case-studies.html" class="btn btn-light">Find Experiences</a>
+                <a href="solutions.html" class="btn btn-outline-light">Become a Host</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-column">
+                <h3>UPTOPIA Solutions</h3>
+                <p>Creating innovative solutions that bridge communities and technology for sustainable impact.</p>
+            </div>
+            <div class="footer-column">
+                <h3>Values</h3>
+                <ul>
+                    <li>Teamwork</li>
+                    <li>Innovation</li>
+                    <li>Reliability</li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="solutions.html">Solutions</a></li>
+                    <li><a href="case-studies.html">Case Studies</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Legal</h3>
+                <ul>
+                    <li><a href="legal.html#privacy">Privacy Policy</a></li>
+                    <li><a href="legal.html#terms">Terms of Service</a></li>
+                    <li><a href="legal.html#cookie">Cookie Policy</a></li>
+                    <li><a href="legal.html#accessibility">Accessibility</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Contact Us</h3>
+                <ul>
+                    <li><i class="fas fa-map-marker-alt" aria-hidden="true"></i> Remote Worldwide</li>
+                    <li><i class="fas fa-phone" aria-hidden="true"></i> Coming Soon</li>
+                    <li><i class="fas fa-envelope" aria-hidden="true"></i> apacheremembers982@gmail.com</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="copyright">
+            <p>&copy; <span id="year"></span> UPTOPIA Solutions. All rights reserved.</p>
+            <p>A hospitality and digital services company</p>
+        </div>
+    </footer>
+
+    <script>
+        (function () {
+            'use strict';
+
+            const navLinks = document.getElementById('nav-links');
+            const menuToggle = document.getElementById('menu-toggle');
+
+            // ---- Mobile menu toggle ----
+            function setMenu(open) {
+                navLinks.classList.toggle('open', open);
+                menuToggle.setAttribute('aria-expanded', String(open));
+                const icon = menuToggle.querySelector('i');
+                if (icon) {
+                    icon.className = open ? 'fas fa-times' : 'fas fa-bars';
+                }
+            }
+
+            menuToggle.addEventListener('click', function (e) {
+                e.stopPropagation();
+                const isOpen = navLinks.classList.contains('open');
+                setMenu(!isOpen);
+            });
+
+            // Close menu when a link is clicked (mobile UX)
+            navLinks.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => setMenu(false));
+            });
+
+            // Close menu when clicking outside
+            document.addEventListener('click', function (e) {
+                if (!navLinks.classList.contains('open')) return;
+                if (!navLinks.contains(e.target) && !menuToggle.contains(e.target)) {
+                    setMenu(false);
+                }
+            });
+
+            // Close on Escape
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape' && navLinks.classList.contains('open')) {
+                    setMenu(false);
+                    menuToggle.focus();
+                }
+            });
+
+            // ---- Dynamic copyright year ----
+            document.getElementById('year').textContent = new Date().getFullYear();
+
+            // ---- Scroll-in animations (respect reduced motion) ----
+            const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+            if (!prefersReduced && 'IntersectionObserver' in window) {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.style.opacity = '1';
+                            entry.target.style.transform = 'translateY(0)';
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                }, { threshold: 0.1 });
+
+                document.querySelectorAll('.service-card, .step-card, .advantage-card')
+                    .forEach(card => {
+                        card.style.opacity = '0';
+                        card.style.transform = 'translateY(20px)';
+                        card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                        observer.observe(card);
+                    });
+            }
+        })();
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+</body>
+              </html>
